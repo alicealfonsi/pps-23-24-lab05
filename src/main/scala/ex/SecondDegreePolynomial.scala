@@ -13,7 +13,9 @@ trait SecondDegreePolynomial:
 
 
 object SecondDegreePolynomial:
-  def apply(secondDegree: Double, firstDegree: Double, constant: Double): SecondDegreePolynomial = ??? // Fill here
+
+  def apply(secondDegree: Double, firstDegree: Double, constant: Double): SecondDegreePolynomial =
+    SecondDegreePolynomialImpl(secondDegree, firstDegree, constant)
 
 @main def checkComplex(): Unit =
   val simplePolynomial = SecondDegreePolynomial(1.0, 0, 3)
@@ -23,6 +25,9 @@ object SecondDegreePolynomial:
   println((sum, sum.secondDegree, sum.firstDegree, sum.constant)) // 1.0 * X^2 + 1.0 * X + 3.0
   val multipleOperations = fullPolynomial - (anotherPolynomial + simplePolynomial)
   println((multipleOperations, multipleOperations.secondDegree, multipleOperations.firstDegree, multipleOperations.constant)) // 2.0 * X^2 + 1.0 * X + 2.0
+  println(fullPolynomial eq fullPolynomial) // check equality
+  println(SecondDegreePolynomial.apply(2.0, 1.0, 1.0)) // check apply with dot notation
+  println(SecondDegreePolynomial(2.0, 1.0, 1.0)) // check apply
 
 /** Hints:
   *   - implement SecondDegreePolynomial with a SecondDegreePolynomialImpl class, similar to PersonImpl in slides
@@ -30,3 +35,23 @@ object SecondDegreePolynomial:
   *   - use a case class SecondDegreePolynomialImpl instead
   *   - check equality and toString now
   */
+
+/*class SecondDegreePolynomialImpl(override val secondDegree: Double,
+                                   override val firstDegree: Double,
+                                   override val constant: Double) extends SecondDegreePolynomial:
+
+  override def +(polynomial: SecondDegreePolynomial): SecondDegreePolynomial =
+    SecondDegreePolynomialImpl(this.secondDegree + polynomial.secondDegree, this.firstDegree + polynomial.firstDegree, this.constant + polynomial.constant)
+
+  override def -(polynomial: SecondDegreePolynomial): SecondDegreePolynomial =
+    SecondDegreePolynomialImpl(this.secondDegree - polynomial.secondDegree, this.firstDegree - polynomial.firstDegree, this.constant - polynomial.constant)
+
+  equality and toString do not work*/
+
+case class SecondDegreePolynomialImpl(override val secondDegree: Double,
+                                      override val firstDegree: Double,
+                                      override val constant: Double) extends SecondDegreePolynomial:
+  override def +(polynomial: SecondDegreePolynomial): SecondDegreePolynomial =
+    SecondDegreePolynomialImpl(this.secondDegree + polynomial.secondDegree, this.firstDegree + polynomial.firstDegree, this.constant + polynomial.constant)
+  override def -(polynomial: SecondDegreePolynomial): SecondDegreePolynomial =
+    SecondDegreePolynomialImpl(this.secondDegree - polynomial.secondDegree, this.firstDegree - polynomial.firstDegree, this.constant - polynomial.constant)
