@@ -61,6 +61,17 @@ case class WarehouseImpl(private var items: Sequence[Item]) extends Warehouse:
   override def retrieve(code: Int): Optional[Item] = items.find(_.code == code)
   override def remove(item: Item): Unit = items = items.filter(_ !=item)
 
+object SameTag:
+  def unapply(items: Sequence[Item]): Option[Sequence[String]] = items match
+    case Sequence.Cons(h, _) =>
+      val sameTags: Sequence[String] = h.tags.filter(tag => sameTag(tag, items))
+      if sameTags.isEmpty then None else Some(sameTags)
+    case _ => None
+  private def sameTag(tag: String, items: Sequence[Item]): Boolean =
+    var tagPresent: Boolean = true
+    items.foreach(item => if !item.tags.contains(tag) then tagPresent = false)
+    tagPresent // true if all items contain tag
+
 @main def mainWarehouse(): Unit =
   val warehouse = Warehouse()
 
@@ -84,6 +95,12 @@ case class WarehouseImpl(private var items: Sequence[Item]) extends Warehouse:
   println(warehouse.retrieve(dellXps.code)) // Just(dellXps)
   println(warehouse.remove(dellXps)) // side effect, remove dell xps from the warehouse
   println(warehouse.retrieve(dellXps.code)) // Empty()
+
+  import Item.*
+  val items: Sequence[Item] = Sequence(dellXps, dellInspiron, xiaomiMoped)
+  items match
+    case SameTag(t) => println(s"$items have same tag $t")
+    case _ => println(s"$items have different tags")
 
 /** Hints:
  * - Implement the Item with a simple case class

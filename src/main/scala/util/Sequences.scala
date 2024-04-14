@@ -19,13 +19,22 @@ object Sequences: // Essentially, generic linkedlists
         sequence = Cons(e, sequence)
       sequence.reverse()
 
-
     def empty[A]: Sequence[A] = Nil()
 
     extension [A](sequence: Sequence[A])
       def head: Optional[A] = sequence match
         case Cons(h, _) => Just(h)
         case _ => Empty()
+
+      def isEmpty: Boolean = sequence match
+        case Nil() => true
+        case _ => false
+
+      def foreach(f: A => Unit): Unit = sequence match
+        case Cons(h, t) =>
+          f(h)
+          t.foreach(f)
+        case _ =>
 
       def concat(other: Sequence[A]): Sequence[A] = sequence match
         case Cons(h, t) => Cons(h, t.concat(other))
@@ -71,5 +80,5 @@ object Sequences: // Essentially, generic linkedlists
   println(sequence.contains(2))
   println(sequence.size)
   println(sequence.add(11))
-
-
+  println(sequence.isEmpty)
+  sequence.foreach(i => println(i))
